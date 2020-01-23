@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AccuraFace</string>
+
+    <string name="accura_face">ACCURA FACE MATCH</string>
+    <string name="accura_upload">Upload Face Image</string>
+
+</resources>
