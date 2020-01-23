@@ -1,4 +1,4 @@
-package com.accurascan.sdk.customview;
+package com.accurascan.facematch.customview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,7 +8,7 @@ import android.util.SparseArray;
 
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.accurascan.sdk.R;
+import com.accurascan.facematch.R;
 
 public class CustomButton extends AppCompatButton {
 

@@ -1,4 +1,4 @@
-package com.accurascan.sdk.util;
+package com.accurascan.facematch.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,7 +10,7 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 
-import com.accurascan.sdk.R;
+import com.accurascan.facematch.R;
 import com.inet.facelock.callback.FaceCallback;
 import com.inet.facelock.callback.FaceDetectionResult;
 import com.inet.facelock.callback.FaceLockHelper;
@@ -56,7 +56,7 @@ public class FaceHelper implements FaceCallback {
             this.faceMatchCallBack = (FaceMatchCallBack) activity;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must imaplement com.accurascan.sdk.util.FaceHelper.FaceMatchCallBack");
+                    + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
         }
 //        this.faceMatchCallBack = faceMatchCallBack;
 
@@ -152,7 +152,7 @@ public class FaceHelper implements FaceCallback {
                 }
             } else {
                 throw new RuntimeException(context.toString()
-                        + " must imaplement com.accurascan.sdk.util.FaceHelper.FaceMatchCallBack");
+                        + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
             }
         } else {
             throw new NullPointerException("inputPath cannot be null");
@@ -192,7 +192,7 @@ public class FaceHelper implements FaceCallback {
                 }
             } else {
                 throw new RuntimeException(context.toString()
-                        + " must imaplement com.accurascan.sdk.util.FaceHelper.FaceMatchCallBack");
+                        + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
 
             }
         } else {
@@ -225,7 +225,7 @@ public class FaceHelper implements FaceCallback {
                 faceMatchCallBack.onSetMatchImage(face2);
             } else {
                 throw new RuntimeException(context.toString()
-                        + " must imaplement com.accurascan.sdk.util.FaceHelper.FaceMatchCallBack");
+                        + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
             }
             startFaceMatch();
         } else {
@@ -326,7 +326,7 @@ public class FaceHelper implements FaceCallback {
             faceMatchCallBack.onFaceMatch(match_score);
         } else {
             throw new RuntimeException(context.toString()
-                    + " must imaplement com.accurascan.sdk.util.FaceHelper.FaceMatchCallBack");
+                    + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
         }
     }
 

@@ -1,4 +1,4 @@
-package com.accurascan.sdk.util;
+package com.accurascan.facematch.util;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,8 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.accurascan.sdk.BuildConfig;
-import com.accurascan.sdk.R;
+import com.accurascan.facematch.BuildConfig;
+import com.accurascan.facematch.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -33,7 +33,7 @@ import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class Utils {
 
-    public static final String CONTENT_URI = "content://com.accurascan.sdk";
+    public static final String CONTENT_URI = "content://com.accurascan.facematch";
     public static final int REQUEST_CAMERA = 101;
     public static final int PERMISSION_CAMERA = 102;
     public static final String FILE_URI = "fileUri";

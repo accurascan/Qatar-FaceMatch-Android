@@ -1,4 +1,4 @@
-package com.accurascan.sdk.customview;
+package com.accurascan.facematch.customview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

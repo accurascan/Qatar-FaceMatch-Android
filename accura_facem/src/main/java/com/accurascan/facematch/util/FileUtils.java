@@ -1,4 +1,4 @@
-package com.accurascan.sdk.util;
+package com.accurascan.facematch.util;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;

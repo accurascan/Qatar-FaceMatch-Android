@@ -1,4 +1,4 @@
-package com.accurascan.sdk.ui;
+package com.accurascan.facematch.ui;
 
 import java.io.File;
 import java.text.NumberFormat;
@@ -24,12 +24,12 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.accurascan.sdk.R;
-import com.accurascan.sdk.customview.CustomTextView;
-import com.accurascan.sdk.customview.FaceImageview;
-import com.accurascan.sdk.util.BitmapHelper;
-import com.accurascan.sdk.util.Utils;
-import com.accurascan.sdk.util.FaceHelper;
+import com.accurascan.facematch.R;
+import com.accurascan.facematch.customview.CustomTextView;
+import com.accurascan.facematch.customview.FaceImageview;
+import com.accurascan.facematch.util.BitmapHelper;
+import com.accurascan.facematch.util.Utils;
+import com.accurascan.facematch.util.FaceHelper;
 import com.inet.facelock.callback.FaceCallback;
 import com.inet.facelock.callback.FaceDetectionResult;
 

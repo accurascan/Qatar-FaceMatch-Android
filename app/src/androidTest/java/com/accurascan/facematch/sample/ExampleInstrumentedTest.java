@@ -1,4 +1,4 @@
-package com.accurascan.demo;
+package com.accurascan.facematch.sample;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.accurascan.demo", appContext.getPackageName());
+        assertEquals("com.accurascan.facematch.sample", appContext.getPackageName());
     }
 }

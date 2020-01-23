@@ -1,4 +1,4 @@
-package com.accurascan.demo;
+package com.accurascan.facematch.sample;
 
 import org.junit.Test;
 

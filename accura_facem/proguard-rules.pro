@@ -33,5 +33,5 @@
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable
 -dontwarn javax.annotation.Nullable
--keep public class com.accurascan.sdk.** {*;}
+-keep public class com.accurascan.facematch.** {*;}
 -keep public class com.inet.facelock.callback.** {*;}

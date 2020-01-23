@@ -27,7 +27,7 @@
                 android:layout_margin="10dp"
                 android:src="@mipmap/back_ic" />
 
-            <com.accurascan.sdk.customview.CustomTextView
+            <com.accurascan.facematch.customview.CustomTextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -82,7 +82,7 @@
                         android:layout_marginEnd="20dp"
                         android:src="@drawable/upload" />
 
-                    <com.accurascan.sdk.customview.CustomTextView
+                    <com.accurascan.facematch.customview.CustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/accura_upload"
@@ -109,7 +109,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg_red">
 
-                    <com.accurascan.sdk.customview.CustomButton
+                    <com.accurascan.facematch.customview.CustomButton
                         android:id="@+id/btnGallery1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -141,7 +141,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg_red">
 
-                    <com.accurascan.sdk.customview.CustomButton
+                    <com.accurascan.facematch.customview.CustomButton
                         android:id="@+id/btnCamera1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
                         android:layout_marginEnd="20dp"
                         android:src="@drawable/upload" />
 
-                    <com.accurascan.sdk.customview.CustomTextView
+                    <com.accurascan.facematch.customview.CustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/accura_upload"
@@ -219,7 +219,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg_red">
 
-                    <com.accurascan.sdk.customview.CustomButton
+                    <com.accurascan.facematch.customview.CustomButton
                         android:id="@+id/btnGallery2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -250,7 +250,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg_red">
 
-                    <com.accurascan.sdk.customview.CustomButton
+                    <com.accurascan.facematch.customview.CustomButton
                         android:id="@+id/btnCamera2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -272,7 +272,7 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <com.accurascan.sdk.customview.CustomTextView
+            <com.accurascan.facematch.customview.CustomTextView
                 android:id="@+id/tvScore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

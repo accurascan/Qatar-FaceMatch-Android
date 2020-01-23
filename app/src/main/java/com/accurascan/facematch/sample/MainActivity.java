@@ -1,4 +1,4 @@
-package com.accurascan.demo;
+package com.accurascan.facematch.sample;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.accurascan.sdk.ui.FaceMatchActivity;
+import com.accurascan.facematch.ui.FaceMatchActivity;
 
 public class MainActivity extends AppCompatActivity {
 
