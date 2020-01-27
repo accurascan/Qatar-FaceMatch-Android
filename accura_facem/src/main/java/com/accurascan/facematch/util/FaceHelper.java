@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public class FaceHelper implements FaceCallback {
+public class FaceHelper {
     private Context context;
     public FaceDetectionResult leftResult = null;
     public FaceDetectionResult rightResult = null;
@@ -33,13 +33,25 @@ public class FaceHelper implements FaceCallback {
     private FaceMatchCallBack faceMatchCallBack;
     private FaceCallback faceCallback;
 
+    /**
+     * override method to get face detect on input image and match image and
+     * face match score between input and match image.
+     *
+     */
     public interface FaceMatchCallBack {
 
+        /**
+         * This is called after face match.
+         * @param ret
+         */
         void onFaceMatch(float ret);
 
-        void onSetInputImage(Bitmap src1);
-
-        void onSetMatchImage(Bitmap src2);
+        /**
+         * This is callback function to get bitmap.
+         * @param src
+         */
+        void onSetInputImage(Bitmap src);
+        void onSetMatchImage(Bitmap src);
 
     }
 
@@ -50,13 +62,13 @@ public class FaceHelper implements FaceCallback {
             this.faceCallback = (FaceCallback) activity;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must imaplement com.inet.facelock.callback.FaceCallback");
+                    + " must implement com.inet.facelock.callback.FaceCallback");
         }
         if (activity instanceof FaceMatchCallBack) {
             this.faceMatchCallBack = (FaceMatchCallBack) activity;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
+                    + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
         }
 //        this.faceMatchCallBack = faceMatchCallBack;
 
@@ -111,6 +123,14 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
+    /**
+     * This is the function to get Face match score.
+     * pass two image uri to detect face and get face match score between two images.
+     * and get data on @see #method(FaceMatchCallBack)
+     *
+     * @param uri1 to pass for detect face from image uri.
+     * @param uri2 to pass for detect face from image uri.
+     */
     public void getFaceMatchScore(Uri uri1, Uri uri2) {
         if (uri1 != null && uri2 != null) {
             getFaceMatchScore(FileUtils.getPath(activity, uri1), FileUtils.getPath(activity, uri2));
@@ -119,6 +139,13 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
+    /**
+     * This is the function to get Face match score.
+     * pass two image file to detect face and get face match score between two images.
+     *
+     * @param file1 to pass for detect face from image file.
+     * @param file2 to pass for detect face from image file.
+     */
     public void getFaceMatchScore(File file1, File file2) {
         if (file1 != null && file2 != null) {
             getFaceMatchScore(file1.getAbsolutePath(), file2.getAbsolutePath());
@@ -127,6 +154,11 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
+    /**
+     * This is the function to get face from image file.
+     *
+     * @param inputFile pass image file to detect fce from image.
+     */
     public void setInputFile(File inputFile) {
         if (inputFile != null) {
             setInputPath(inputFile.getAbsolutePath());
@@ -135,6 +167,11 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
+    /**
+     * This is the function to get face from image file uri.
+     *
+     * @param fileUri pass image uri to detect face from image.
+     */
     public void setInputUri(Uri fileUri) {
         if (fileUri != null) {
             setInputPath(FileUtils.getPath(activity, fileUri));
@@ -143,6 +180,11 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
+    /**
+     * This is the function to get face from image path.
+     *
+     * @param inputPath pass image path to detect face from image.
+     */
     public void setInputPath(String inputPath) {
         if (inputPath != null) {
             face1 = getBitmap(inputPath);
@@ -152,7 +194,7 @@ public class FaceHelper implements FaceCallback {
                 }
             } else {
                 throw new RuntimeException(context.toString()
-                        + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
+                        + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
             }
         } else {
             throw new NullPointerException("inputPath cannot be null");
@@ -163,7 +205,13 @@ public class FaceHelper implements FaceCallback {
 //        }
     }
 
-
+    /**
+     * This is the function to get face from image path.
+     *
+     * to match face between two images then must have to call @setInputPath and @setMatchFile.
+     *
+     * @param matchFile pass image file
+     */
     public void setMatchFile(File matchFile) {
         if (matchFile != null) {
             setMatchPath(matchFile.getAbsolutePath());
@@ -172,6 +220,13 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
+    /**
+     * This is the function to get face from image uri.
+     *
+     * to match face between two images then must have to call @setInputPath and @setMatchUri.
+     *
+     * @param fileUri pass image uri
+     */
     public void setMatchUri(Uri fileUri) {
         if (fileUri != null) {
             setMatchPath(FileUtils.getPath(activity, fileUri));
@@ -180,6 +235,13 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
+    /**
+     * This is the function to get face from image uri.
+     *
+     * to match face between two images then must have to call @setInputPath and @setMatchPath.
+     *
+     * @param matchPath pass image path
+     */
     public void setMatchPath(String matchPath) {
         if (face1 == null) {
             throw new RuntimeException(context.toString() + " Please set Input file First");
@@ -192,16 +254,14 @@ public class FaceHelper implements FaceCallback {
                 }
             } else {
                 throw new RuntimeException(context.toString()
-                        + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
+                        + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
 
             }
         } else {
-            throw new NullPointerException("matchFile cannot be null");
+            throw new NullPointerException("matchPath cannot be null");
         }
         rightResult = null;
-//        if (face1 != null && face2 != null) {
         startFaceMatch();
-//        }
     }
 
     private Bitmap getBitmap(String path) {
@@ -216,6 +276,13 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
+    /**
+     * This is the function to get Face match score.
+     * pass two image path to detect face and get face match score between two images.
+     *
+     * @param path1 to pass for detect face from image path.
+     * @param path2 to pass for detect face from image path.
+     */
     public void getFaceMatchScore(String path1, String path2) {
         if (path1 != null && path2 != null) {
             face1 = getBitmap(path1);
@@ -225,7 +292,7 @@ public class FaceHelper implements FaceCallback {
                 faceMatchCallBack.onSetMatchImage(face2);
             } else {
                 throw new RuntimeException(context.toString()
-                        + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
+                        + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
             }
             startFaceMatch();
         } else {
@@ -253,12 +320,10 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
-    @Override
-    public void onInitEngine(int ret) {
-
-    }
-
-    @Override
+    /**
+     * This the function to detect face onLeftResult. and get face match score @onFaceMatch override method.
+     * @param faceResult
+     */
     public void onLeftDetect(FaceDetectionResult faceResult) {
         leftResult = null;
         if (faceResult != null) {
@@ -299,7 +364,10 @@ public class FaceHelper implements FaceCallback {
         calcMatch();
     }
 
-    @Override
+    /**
+     * This the function to detect face onRightResult. and get face match score @onFaceMatch override method.
+     * @param faceResult
+     */
     public void onRightDetect(FaceDetectionResult faceResult) {
         if (faceResult != null) {
             rightResult = faceResult;
@@ -307,11 +375,6 @@ public class FaceHelper implements FaceCallback {
             rightResult = null;
         }
         calcMatch();
-    }
-
-    @Override
-    public void onExtractInit(int ret) {
-
     }
 
 
@@ -326,7 +389,7 @@ public class FaceHelper implements FaceCallback {
             faceMatchCallBack.onFaceMatch(match_score);
         } else {
             throw new RuntimeException(context.toString()
-                    + " must imaplement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
+                    + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
         }
     }
 
@@ -357,9 +420,12 @@ public class FaceHelper implements FaceCallback {
         }
     }
 
-    //used for rotate image of given path
-    //parameter to pass : String path
-    // return bitmap
+    /**
+     * return Bitmap from given image path.
+     *
+     * @param path
+     * @return bitmap according to the orientation.
+     */
     private Bitmap rotateImage(final String path) {
 
         Bitmap b = decodeFileFromPath(path);
@@ -393,9 +459,12 @@ public class FaceHelper implements FaceCallback {
         return b;
     }
 
-    //Get bitmap image form path
-    //parameter to pass : String path
-    // return Bitmap
+    /**
+     * Decode an path into a bitmap.
+     *
+     * @param path imagepath is not null
+     * @return Bitmap
+     */
     private Bitmap decodeFileFromPath(String path) {
         Uri uri = getImageUri(path);
         InputStream in = null;
@@ -433,16 +502,23 @@ public class FaceHelper implements FaceCallback {
         return null;
     }
 
-    //get image uwi from given string path
-    //parameter to pass : String path
-    // return Uri
+    /**
+     * Creates a Uri from a path.
+     *
+     * @param path
+     * @return a Uri for the given path
+     */
     private Uri getImageUri(String path) {
         return Uri.fromFile(new File(path));
     }
 
-    //Used for resizing bitmap
-    //parameter to pass : Bitmap image, int maxSize
-    // return bitmap
+    /**
+     * Return resize bitmap
+     *
+     * @param image existing bitmap
+     * @param maxSize maxSize is height or width according to bitmap ratio.
+     * @return
+     */
     private Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();

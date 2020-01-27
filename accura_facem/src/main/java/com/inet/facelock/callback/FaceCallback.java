@@ -10,7 +10,7 @@ public interface FaceCallback {
 	public void onInitEngine(int ret);
 	/**
 	 * This is callback function to get face detection result.
-	 * @param faceArray
+	 * @param face
 	 */
 	public void onLeftDetect(FaceDetectionResult face);
 	public void onRightDetect(FaceDetectionResult face);
@@ -19,8 +19,5 @@ public interface FaceCallback {
 	 * @param ret
 	 */
 	public void onExtractInit(int ret);
-	/**
-	 * This is callback function to get face feature.
-	 * @param faceFeature
-	 */
+
 }
