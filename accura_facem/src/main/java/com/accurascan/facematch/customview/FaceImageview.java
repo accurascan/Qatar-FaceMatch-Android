@@ -17,12 +17,10 @@ public class FaceImageview extends View {
     Bitmap image = null;
     FaceDetectionResult detectionResult = null;
 
-    @SuppressLint("SdCardPath")
     public FaceImageview(Context context) {
         super(context);
 
-        @SuppressWarnings("deprecation")
-        LayoutParams param = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        LayoutParams param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
         this.setLayoutParams(param);
     }

@@ -62,13 +62,13 @@ public class FaceHelper {
             this.faceCallback = (FaceCallback) activity;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement com.inet.facelock.callback.FaceCallback");
+                    + " must implement " + FaceCallback.class.getName());
         }
         if (activity instanceof FaceMatchCallBack) {
             this.faceMatchCallBack = (FaceMatchCallBack) activity;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
+                    + " must implement "+ FaceMatchCallBack.class.getName());
         }
 //        this.faceMatchCallBack = faceMatchCallBack;
 
@@ -126,7 +126,7 @@ public class FaceHelper {
     /**
      * This is the function to get Face match score.
      * pass two image uri to detect face and get face match score between two images.
-     * and get data on @see #method(FaceMatchCallBack)
+     * and get data on {@link FaceMatchCallBack}
      *
      * @param uri1 to pass for detect face from image uri.
      * @param uri2 to pass for detect face from image uri.
@@ -159,9 +159,9 @@ public class FaceHelper {
      *
      * @param inputFile pass image file to detect fce from image.
      */
-    public void setInputFile(File inputFile) {
+    public void setInputImage(File inputFile) {
         if (inputFile != null) {
-            setInputPath(inputFile.getAbsolutePath());
+            setInputImage(inputFile.getAbsolutePath());
         } else {
             throw new NullPointerException("inputFile cannot be null");
         }
@@ -172,9 +172,9 @@ public class FaceHelper {
      *
      * @param fileUri pass image uri to detect face from image.
      */
-    public void setInputUri(Uri fileUri) {
+    public void setInputImage(Uri fileUri) {
         if (fileUri != null) {
-            setInputPath(FileUtils.getPath(activity, fileUri));
+            setInputImage(FileUtils.getPath(activity, fileUri));
         } else {
             throw new NullPointerException("fileUri cannot be null");
         }
@@ -185,7 +185,7 @@ public class FaceHelper {
      *
      * @param inputPath pass image path to detect face from image.
      */
-    public void setInputPath(String inputPath) {
+    public void setInputImage(String inputPath) {
         if (inputPath != null) {
             face1 = getBitmap(inputPath);
             if (faceMatchCallBack != null) {
@@ -194,7 +194,7 @@ public class FaceHelper {
                 }
             } else {
                 throw new RuntimeException(context.toString()
-                        + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
+                        + " must implement " + FaceMatchCallBack.class.getName());
             }
         } else {
             throw new NullPointerException("inputPath cannot be null");
@@ -208,13 +208,36 @@ public class FaceHelper {
     /**
      * This is the function to get face from image path.
      *
-     * to match face between two images then must have to call @setInputPath and @setMatchFile.
+     * @param bitmap pass bitmap to detect face from image.
+     */
+    public void setInputImage(Bitmap bitmap) {
+        if (bitmap != null) {
+            face1 = bitmap;
+            if (faceMatchCallBack != null) {
+                faceMatchCallBack.onSetInputImage(face1);
+            } else {
+                throw new RuntimeException(context.toString()
+                        + " must implement " + FaceMatchCallBack.class.getName());
+            }
+        } else {
+            throw new NullPointerException("bitmap cannot be null");
+        }
+        leftResult = null;
+//        if (face1 != null && face2 != null) {
+        startFaceMatch();
+//        }
+    }
+
+    /**
+     * This is the function to get face from image path.
+     *
+     * to match face between two images then must have to call {@link FaceHelper#setInputImage(String)} and {@link FaceHelper#setMatchImage(String)}.
      *
      * @param matchFile pass image file
      */
-    public void setMatchFile(File matchFile) {
+    public void setMatchImage(File matchFile) {
         if (matchFile != null) {
-            setMatchPath(matchFile.getAbsolutePath());
+            setMatchImage(matchFile.getAbsolutePath());
         } else {
             throw new NullPointerException("matchFile cannot be null");
         }
@@ -223,13 +246,13 @@ public class FaceHelper {
     /**
      * This is the function to get face from image uri.
      *
-     * to match face between two images then must have to call @setInputPath and @setMatchUri.
+     * to match face between two images then must have to call{@link FaceHelper#setInputImage(String)} and {@link FaceHelper#setMatchImage(String)}.
      *
      * @param fileUri pass image uri
      */
-    public void setMatchUri(Uri fileUri) {
+    public void setMatchImage(Uri fileUri) {
         if (fileUri != null) {
-            setMatchPath(FileUtils.getPath(activity, fileUri));
+            setMatchImage(FileUtils.getPath(activity, fileUri));
         } else {
             throw new NullPointerException("fileUri cannot be null");
         }
@@ -238,13 +261,13 @@ public class FaceHelper {
     /**
      * This is the function to get face from image uri.
      *
-     * to match face between two images then must have to call @setInputPath and @setMatchPath.
+     * to match face between two images then must have to call {@link FaceHelper#setInputImage(String)} and {@link FaceHelper#setMatchImage(String)}.
      *
      * @param matchPath pass image path
      */
-    public void setMatchPath(String matchPath) {
+    public void setMatchImage(String matchPath) {
         if (face1 == null) {
-            throw new RuntimeException(context.toString() + " Please set Input file First");
+            throw new RuntimeException(context.toString() + " Please set Input image First");
         }
         if (matchPath != null) {
             face2 = getBitmap(matchPath);
@@ -254,7 +277,36 @@ public class FaceHelper {
                 }
             } else {
                 throw new RuntimeException(context.toString()
-                        + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
+                        + " must implement " + FaceMatchCallBack.class.getName());
+
+            }
+        } else {
+            throw new NullPointerException("matchPath cannot be null");
+        }
+        rightResult = null;
+        startFaceMatch();
+    }
+
+    /**
+     * This is the function to get face from bitmap.
+     *
+     * to match face between two images then must have to call {@link FaceHelper#setInputImage(String)} and {@link FaceHelper#setMatchImage(String)}
+     *
+     * @param bitmap pass bitmap
+     */
+    public void setMatchImage(Bitmap bitmap) {
+        if (face1 == null) {
+            throw new RuntimeException(context.toString() + " Please set Input image First");
+        }
+        if (bitmap != null) {
+            face2 = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+            if (faceMatchCallBack != null) {
+                if (face2 != null) {
+                    faceMatchCallBack.onSetMatchImage(face2);
+                }
+            } else {
+                throw new RuntimeException(context.toString()
+                        + " must implement " + FaceMatchCallBack.class.getName());
 
             }
         } else {
@@ -292,7 +344,7 @@ public class FaceHelper {
                 faceMatchCallBack.onSetMatchImage(face2);
             } else {
                 throw new RuntimeException(context.toString()
-                        + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
+                        + " must implement " + FaceMatchCallBack.class.getName());
             }
             startFaceMatch();
         } else {

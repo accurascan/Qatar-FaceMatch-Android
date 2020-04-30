@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -52,12 +53,23 @@ public class FaceMatchActivity extends AppCompatActivity implements FaceCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facematch);
         setSupportActionBar(findViewById(R.id.toolbar));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         helper = new FaceHelper(this);
         if (Utils.isPermissionsGranted(this)) {
             init();
         } else {
             requestCameraPermission();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void init() {
@@ -116,13 +128,6 @@ public class FaceMatchActivity extends AppCompatActivity implements FaceCallback
             }
         });
 
-        findViewById(R.id.ivBack).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
         txtScore = (CustomTextView) findViewById(R.id.tvScore);
         txtScore.setText("Match Score : 0 %");
 
@@ -178,9 +183,9 @@ public class FaceMatchActivity extends AppCompatActivity implements FaceCallback
 
                 Uri uri = data.getData();
                 if (ind == 1) {
-                    helper.setInputUri(uri);
+                    helper.setInputImage(uri);
                 } else if (ind == 2) {
-                    helper.setMatchUri(uri);
+                    helper.setMatchImage(uri);
                 }
 
             } else if (requestCode == CAPTURE_IMAGE) { // handle request code CAPTURE_IMAGE used for capture image in camera
@@ -198,9 +203,9 @@ public class FaceMatchActivity extends AppCompatActivity implements FaceCallback
 
                 // ind is a integer variable used to handle front side image (Face 1) and bck side image (Face 2) 1= for face1 and 2= for face 2
                 if (ind == 1) {
-                    helper.setInputPath(ttt.getAbsolutePath());
+                    helper.setInputImage(ttt.getAbsolutePath());
                 } else if (ind == 2) {
-                    helper.setMatchPath(ttt.getAbsolutePath());
+                    helper.setMatchImage(ttt.getAbsolutePath());
                 }
                 try {
                     ttt.delete();

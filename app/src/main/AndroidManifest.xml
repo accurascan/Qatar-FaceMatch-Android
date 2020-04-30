@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.accurascan.facematch.ui.FaceMatchActivity"
+            android:label="@string/accura_face"
+            android:theme="@style/FaceMatchTheme" />
     </application>
 
 
