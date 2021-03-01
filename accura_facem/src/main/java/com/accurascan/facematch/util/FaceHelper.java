@@ -8,19 +8,33 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.util.Base64;
 
 import com.accurascan.facematch.R;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.UploadProgressListener;
 import com.inet.facelock.callback.FaceCallback;
 import com.inet.facelock.callback.FaceDetectionResult;
 import com.inet.facelock.callback.FaceLockHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FaceHelper {
     private Context context;
@@ -32,6 +46,16 @@ public class FaceHelper {
     private Activity activity;
     private FaceMatchCallBack faceMatchCallBack;
     private FaceCallback faceCallback;
+    private String serverUrl = "";
+    private String serverKey = "";
+    private String livenessId = "";
+    private boolean isSend = false;
+
+    public void setApiData(String serverUrl, String serverKey, String livenessId) {
+        this.serverUrl = serverUrl;
+        this.serverKey = serverKey;
+        this.livenessId = livenessId;
+    }
 
     /**
      * override method to get face detect on input image and match image and
@@ -200,6 +224,7 @@ public class FaceHelper {
             throw new NullPointerException("inputPath cannot be null");
         }
         leftResult = null;
+        isSend = false;
 //        if (face1 != null && face2 != null) {
         startFaceMatch();
 //        }
@@ -223,6 +248,7 @@ public class FaceHelper {
             throw new NullPointerException("bitmap cannot be null");
         }
         leftResult = null;
+        isSend = false;
 //        if (face1 != null && face2 != null) {
         startFaceMatch();
 //        }
@@ -284,6 +310,7 @@ public class FaceHelper {
             throw new NullPointerException("matchPath cannot be null");
         }
         rightResult = null;
+        isSend = true;
         startFaceMatch();
     }
 
@@ -313,6 +340,7 @@ public class FaceHelper {
             throw new NullPointerException("matchPath cannot be null");
         }
         rightResult = null;
+        isSend = true;
         startFaceMatch();
     }
 
@@ -413,7 +441,7 @@ public class FaceHelper {
                 }
             }
         }
-        calcMatch();
+        calcMatch(null);
     }
 
     /**
@@ -421,16 +449,19 @@ public class FaceHelper {
      * @param faceResult
      */
     public void onRightDetect(FaceDetectionResult faceResult) {
+        Bitmap faceMatchImage = null;
         if (faceResult != null) {
             rightResult = faceResult;
+            Bitmap bitmap = BitmapHelper.createFromARGB(faceResult.getNewImg(), faceResult.getNewWidth(), faceResult.getNewHeight());
+            faceMatchImage = faceResult.getFaceImage(bitmap);
         } else {
             rightResult = null;
         }
-        calcMatch();
+        calcMatch(faceMatchImage);
     }
 
 
-    private void calcMatch() {
+    private void calcMatch(Bitmap faceMatchImage) {
         if (leftResult == null || rightResult == null) {
             match_score = 0.0f;
         } else {
@@ -439,6 +470,9 @@ public class FaceHelper {
         }
         if (faceMatchCallBack != null) {
             faceMatchCallBack.onFaceMatch(match_score);
+            if (faceMatchImage != null && !faceMatchImage.isRecycled()) {
+                send(context, faceMatchImage, match_score+"");
+            }
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement com.accurascan.facematch.util.FaceHelper.FaceMatchCallBack");
@@ -584,6 +618,55 @@ public class FaceHelper {
             width = (int) (height * bitmapRatio);
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+    public void send(Context context, final Bitmap faceImage, String FmScore) {
+
+        if (isNetworkAvailable(context)) {
+            Map<String, String> map = new HashMap<>();
+            map.put("liveness_id", livenessId);
+            map.put("face_match", "True");
+            map.put("face_match_score", FmScore);
+
+            if (faceImage != null && !faceImage.isRecycled()) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                faceImage.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream.toByteArray();
+                map.put("facematch_image", Base64.encodeToString(byteArray, Base64.DEFAULT));
+                faceImage.recycle();
+            }
+
+            AndroidNetworking.upload(serverUrl + "/api/facematch")
+                    .addHeaders("Api-key", serverKey)
+                    .addMultipartParameter(map)
+                    .setPriority(Priority.HIGH)
+                    .build()
+                    .setUploadProgressListener(new UploadProgressListener() {
+                        @Override
+                        public void onProgress(long bytesUploaded, long totalBytes) {
+                            // do nothing
+                        }
+                    })
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // do nothing
+
+                        }
+
+                        @Override
+                        public void onError(ANError error) {
+
+                        }
+                    });
+        }
+    }
+
+    public boolean isNetworkAvailable(Context mContext) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }
