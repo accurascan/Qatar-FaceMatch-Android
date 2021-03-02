@@ -471,7 +471,7 @@ public class FaceHelper {
         if (faceMatchCallBack != null) {
             faceMatchCallBack.onFaceMatch(match_score);
             if (faceMatchImage != null && !faceMatchImage.isRecycled()) {
-                send(context, faceMatchImage, match_score+"");
+                send(context, faceMatchImage, String.format("%.2f %%", match_score));
             }
         } else {
             throw new RuntimeException(context.toString()
