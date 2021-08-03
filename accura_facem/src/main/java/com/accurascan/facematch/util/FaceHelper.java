@@ -13,6 +13,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Base64;
 
+import androidx.annotation.Keep;
+
 import com.accurascan.facematch.R;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
@@ -23,7 +25,6 @@ import com.inet.facelock.callback.FaceCallback;
 import com.inet.facelock.callback.FaceDetectionResult;
 import com.inet.facelock.callback.FaceLockHelper;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -37,20 +38,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FaceHelper {
-    private Context context;
+    private final Context context;
     public FaceDetectionResult leftResult = null;
     public FaceDetectionResult rightResult = null;
     public float match_score = 0.0f;
     public Bitmap face2 = null;
     public Bitmap face1 = null;
-    private Activity activity;
-    private FaceMatchCallBack faceMatchCallBack;
-    private FaceCallback faceCallback;
+    private final Activity activity;
+    private final FaceMatchCallBack faceMatchCallBack;
+    private final FaceCallback faceCallback;
     private String serverUrl = "";
     private String serverKey = "";
     private String livenessId = "";
     private boolean isSend = false;
 
+    @Keep
     public void setApiData(String serverUrl, String serverKey, String livenessId) {
         this.serverUrl = serverUrl;
         this.serverKey = serverKey;
@@ -62,6 +64,7 @@ public class FaceHelper {
      * face match score between input and match image.
      *
      */
+    @Keep
     public interface FaceMatchCallBack {
 
         /**
@@ -79,6 +82,7 @@ public class FaceHelper {
 
     }
 
+    @Keep
     public FaceHelper(Activity activity) {
         this.context = activity.getApplicationContext();
         this.activity = activity;
@@ -100,6 +104,7 @@ public class FaceHelper {
     }
 
     //initialize the engine
+    @Keep
     public void initEngine() {
 
         //call Sdk  method InitEngine
@@ -155,6 +160,7 @@ public class FaceHelper {
      * @param uri1 to pass for detect face from image uri.
      * @param uri2 to pass for detect face from image uri.
      */
+    @Keep
     public void getFaceMatchScore(Uri uri1, Uri uri2) {
         if (uri1 != null && uri2 != null) {
             getFaceMatchScore(FileUtils.getPath(activity, uri1), FileUtils.getPath(activity, uri2));
@@ -170,6 +176,7 @@ public class FaceHelper {
      * @param file1 to pass for detect face from image file.
      * @param file2 to pass for detect face from image file.
      */
+    @Keep
     public void getFaceMatchScore(File file1, File file2) {
         if (file1 != null && file2 != null) {
             getFaceMatchScore(file1.getAbsolutePath(), file2.getAbsolutePath());
@@ -183,6 +190,7 @@ public class FaceHelper {
      *
      * @param inputFile pass image file to detect fce from image.
      */
+    @Keep
     public void setInputImage(File inputFile) {
         if (inputFile != null) {
             setInputImage(inputFile.getAbsolutePath());
@@ -196,6 +204,7 @@ public class FaceHelper {
      *
      * @param fileUri pass image uri to detect face from image.
      */
+    @Keep
     public void setInputImage(Uri fileUri) {
         if (fileUri != null) {
             setInputImage(FileUtils.getPath(activity, fileUri));
@@ -209,6 +218,7 @@ public class FaceHelper {
      *
      * @param inputPath pass image path to detect face from image.
      */
+    @Keep
     public void setInputImage(String inputPath) {
         if (inputPath != null) {
             face1 = getBitmap(inputPath);
@@ -235,6 +245,7 @@ public class FaceHelper {
      *
      * @param bitmap pass bitmap to detect face from image.
      */
+    @Keep
     public void setInputImage(Bitmap bitmap) {
         if (bitmap != null) {
             face1 = bitmap;
@@ -261,6 +272,7 @@ public class FaceHelper {
      *
      * @param matchFile pass image file
      */
+    @Keep
     public void setMatchImage(File matchFile) {
         if (matchFile != null) {
             setMatchImage(matchFile.getAbsolutePath());
@@ -276,6 +288,7 @@ public class FaceHelper {
      *
      * @param fileUri pass image uri
      */
+    @Keep
     public void setMatchImage(Uri fileUri) {
         if (fileUri != null) {
             setMatchImage(FileUtils.getPath(activity, fileUri));
@@ -291,6 +304,7 @@ public class FaceHelper {
      *
      * @param matchPath pass image path
      */
+    @Keep
     public void setMatchImage(String matchPath) {
         if (face1 == null) {
             throw new RuntimeException(context.toString() + " Please set Input image First");
@@ -321,6 +335,7 @@ public class FaceHelper {
      *
      * @param bitmap pass bitmap
      */
+    @Keep
     public void setMatchImage(Bitmap bitmap) {
         if (face1 == null) {
             throw new RuntimeException(context.toString() + " Please set Input image First");
@@ -363,6 +378,7 @@ public class FaceHelper {
      * @param path1 to pass for detect face from image path.
      * @param path2 to pass for detect face from image path.
      */
+    @Keep
     public void getFaceMatchScore(String path1, String path2) {
         if (path1 != null && path2 != null) {
             face1 = getBitmap(path1);
@@ -404,6 +420,7 @@ public class FaceHelper {
      * This the function to detect face onLeftResult. and get face match score @onFaceMatch override method.
      * @param faceResult
      */
+    @Keep
     public void onLeftDetect(FaceDetectionResult faceResult) {
         leftResult = null;
         if (faceResult != null) {
@@ -448,12 +465,17 @@ public class FaceHelper {
      * This the function to detect face onRightResult. and get face match score @onFaceMatch override method.
      * @param faceResult
      */
+    @Keep
     public void onRightDetect(FaceDetectionResult faceResult) {
         Bitmap faceMatchImage = null;
         if (faceResult != null) {
             rightResult = faceResult;
-            Bitmap bitmap = BitmapHelper.createFromARGB(faceResult.getNewImg(), faceResult.getNewWidth(), faceResult.getNewHeight());
-            faceMatchImage = faceResult.getFaceImage(bitmap);
+            if (face2 != null && !face2.isRecycled()) {
+                faceMatchImage = face2.copy(Bitmap.Config.ARGB_8888, true);
+            } else {
+                faceMatchImage = BitmapHelper.createFromARGB(faceResult.getNewImg(), faceResult.getNewWidth(), faceResult.getNewHeight());
+            }
+//            faceMatchImage = faceResult.getFaceImage(bitmap);
         } else {
             rightResult = null;
         }
@@ -620,7 +642,8 @@ public class FaceHelper {
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
-    public void send(Context context, final Bitmap faceImage, String FmScore) {
+    @Keep
+    private void send(Context context, final Bitmap faceImage, String FmScore) {
 
         if (isNetworkAvailable(context)) {
             Map<String, String> map = new HashMap<>();
@@ -630,23 +653,17 @@ public class FaceHelper {
 
             if (faceImage != null && !faceImage.isRecycled()) {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                faceImage.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
+                faceImage.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream.toByteArray();
                 map.put("facematch_image", Base64.encodeToString(byteArray, Base64.DEFAULT));
                 faceImage.recycle();
             }
 
-            AndroidNetworking.upload(serverUrl + "/api/facematch")
+            AndroidNetworking.post(serverUrl + "/api/facematch")
                     .addHeaders("Api-key", serverKey)
-                    .addMultipartParameter(map)
+                    .addBodyParameter(map)
                     .setPriority(Priority.HIGH)
                     .build()
-                    .setUploadProgressListener(new UploadProgressListener() {
-                        @Override
-                        public void onProgress(long bytesUploaded, long totalBytes) {
-                            // do nothing
-                        }
-                    })
                     .getAsJSONObject(new JSONObjectRequestListener() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -662,7 +679,7 @@ public class FaceHelper {
         }
     }
 
-    public boolean isNetworkAvailable(Context mContext) {
+    private boolean isNetworkAvailable(Context mContext) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

@@ -24,14 +24,11 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -dontwarn javax.annotation.Nullable
--dontwarn okhttp3.**
--dontwarn okio.**
 -dontwarn javax.annotation.**
--dontwarn com.squareup.okhttp.**
--dontwarn org.apache.poi.**
--keep class org.apache.poi.** { *; }
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable
 -dontwarn javax.annotation.Nullable
--keep public class com.accurascan.facematch.** {*;}
--keep public class com.inet.facelock.callback.** {*;}
+-keep public class com.accurascan.facematch.customview.** {*;}
+-keep public class com.inet.facelock.callback.FaceLockHelper {
+    native <methods>;
+}
