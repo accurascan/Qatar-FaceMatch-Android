@@ -1,6 +1,8 @@
 package com.inet.facelock.callback;
 
+import androidx.annotation.Keep;
 
+@Keep
 public interface FaceCallback {
 
 	/**

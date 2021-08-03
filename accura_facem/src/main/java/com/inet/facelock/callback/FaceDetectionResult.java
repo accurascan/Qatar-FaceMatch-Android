@@ -3,6 +3,9 @@ package com.inet.facelock.callback;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class FaceDetectionResult {
 	Rect   faceRect;
 	float  confidence;

@@ -16,6 +16,7 @@
             android:layout_height="?android:attr/actionBarSize"
             android:layout_gravity="center"
             android:background="@color/colorPrimary"
+            app:titleTextColor="@color/white"
             android:contentInsetLeft="0dp"
             app:contentInsetStart="0dp">
 

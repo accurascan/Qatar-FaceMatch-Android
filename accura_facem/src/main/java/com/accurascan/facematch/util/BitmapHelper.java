@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 
+import androidx.annotation.Keep;
+
 public class BitmapHelper {
 	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
 	    // Raw height and width of image
@@ -107,7 +109,8 @@ public class BitmapHelper {
 	    options.inJustDecodeBounds = false;
 	    return BitmapFactory.decodeStream(url.openStream(), null, options);
 	}
-	
+
+	@Keep
 	public static Bitmap createFromARGB(byte[] buffer, int width, int height) {
 		Bitmap bmp;
 		bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
