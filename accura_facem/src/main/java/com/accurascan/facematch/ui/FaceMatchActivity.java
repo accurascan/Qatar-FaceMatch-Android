@@ -24,9 +24,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.accurascan.facematch.R;
-import com.accurascan.facematch.customview.CustomTextView;
 import com.accurascan.facematch.customview.FaceImageview;
 import com.accurascan.facematch.util.BitmapHelper;
 import com.accurascan.facematch.util.Utils;
@@ -39,7 +39,7 @@ public class FaceMatchActivity extends AppCompatActivity implements FaceCallback
 
     FaceImageview image1;
     FaceImageview image2;
-    CustomTextView txtScore;
+    TextView txtScore;
     boolean bImage2 = false;
     boolean bImage1 = false;
 
@@ -128,7 +128,7 @@ public class FaceMatchActivity extends AppCompatActivity implements FaceCallback
             }
         });
 
-        txtScore = (CustomTextView) findViewById(R.id.tvScore);
+        txtScore = (TextView) findViewById(R.id.tvScore);
         txtScore.setText("Match Score : 0 %");
 
         image1 = new FaceImageview(this);  //initialize the view of front image
@@ -226,7 +226,7 @@ public class FaceMatchActivity extends AppCompatActivity implements FaceCallback
             layout.removeAllViews();
             layout.addView(image1);
             bImage1 = true;
-        }
+        } else image1.invalidate();
     }
 
     private void SetImageView2() {
@@ -239,7 +239,7 @@ public class FaceMatchActivity extends AppCompatActivity implements FaceCallback
             layout2.removeAllViews();
             layout2.addView(image2);
             bImage2 = true;
-        }
+        } else image2.invalidate();
     }
 
     @Override
@@ -252,12 +252,18 @@ public class FaceMatchActivity extends AppCompatActivity implements FaceCallback
 
     @Override
     public void onSetInputImage(Bitmap src1) {
+        if (image1.getImage() != null && !image1.getImage().isRecycled()) {
+            image1.getImage().recycle();
+        }
         image1.setImage(src1);
         SetImageView1();
     }
 
     @Override
     public void onSetMatchImage(Bitmap src2) {
+        if (image2.getImage() != null && !image2.getImage().isRecycled()) {
+            image2.getImage().recycle();
+        }
         image2.setImage(src2);
         SetImageView2();
     }
