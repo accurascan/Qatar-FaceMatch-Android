@@ -65,13 +65,12 @@
                         android:layout_marginEnd="20dp"
                         android:src="@drawable/upload" />
 
-                    <com.accurascan.facematch.customview.CustomTextView
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/accura_upload"
                         android:textColor="@android:color/black"
-                        android:textSize="17dp"
-                        app:typeface="ALLER_STD_REG" />
+                        android:textSize="17dp" />
 
                 </LinearLayout>
 
@@ -92,7 +91,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg_red">
 
-                    <com.accurascan.facematch.customview.CustomButton
+                    <Button
                         android:id="@+id/btnGallery1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -101,8 +100,7 @@
                         android:text="Gallery"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="17dp"
-                        app:typeface="ALLER_STD_REG" />
+                        android:textSize="17dp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -124,7 +122,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg_red">
 
-                    <com.accurascan.facematch.customview.CustomButton
+                    <Button
                         android:id="@+id/btnCamera1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -133,8 +131,7 @@
                         android:text="Camera"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="17dp"
-                        app:typeface="ALLER_STD_REG" />
+                        android:textSize="17dp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -175,13 +172,12 @@
                         android:layout_marginEnd="20dp"
                         android:src="@drawable/upload" />
 
-                    <com.accurascan.facematch.customview.CustomTextView
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/accura_upload"
                         android:textColor="@android:color/black"
-                        android:textSize="17dp"
-                        app:typeface="ALLER_STD_REG" />
+                        android:textSize="17dp" />
 
                 </LinearLayout>
 
@@ -202,7 +198,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg_red">
 
-                    <com.accurascan.facematch.customview.CustomButton
+                    <Button
                         android:id="@+id/btnGallery2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -211,8 +207,7 @@
                         android:text="Gallery"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="17dp"
-                        app:typeface="ALLER_STD_REG" />
+                        android:textSize="17dp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -233,7 +228,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/btn_bg_red">
 
-                    <com.accurascan.facematch.customview.CustomButton
+                    <Button
                         android:id="@+id/btnCamera2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -242,8 +237,7 @@
                         android:text="Camera"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="17dp"
-                        app:typeface="ALLER_STD_REG" />
+                        android:textSize="17dp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -255,7 +249,7 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <com.accurascan.facematch.customview.CustomTextView
+            <TextView
                 android:id="@+id/tvScore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -272,8 +266,7 @@
                 android:text="Match Score : "
                 android:textColor="@android:color/white"
                 android:textSize="20dp"
-                android:textStyle="bold"
-                app:typeface="ALLER_STD_REG" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
