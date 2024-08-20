@@ -1,5 +1,6 @@
 package com.inet.facelock.callback;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
@@ -31,14 +32,13 @@ public class FaceLockHelper {
      * @param weightpath  deep CNN weight file's path.
      * @return result
      */
-    public static native int InitEngine(FaceCallback callback, int fmin, int fmax, float resizeRate, String modelpath, String weightpath, AssetManager assets);
-
+    public native int InitEngine(Context callback, int fmin, int fmax, float resizeRate, String modelpath, String weightpath, AssetManager assets, byte[] licBuff, int pLicLen1);
     /**
      * This is the function that finalize the face engine when app is closed.
      *
      * @return
      */
-    public static native boolean CloseEngine();
+    public native boolean CloseEngine();
 
     /**
      * This is the function to detect faces.
@@ -46,9 +46,10 @@ public class FaceLockHelper {
      * @param vBmp face image buffer
      *             its format is RGBA or YUV420
      */
-    public static native void DetectLeftFace(byte[] vBmp, int width, int height);
+    public native void DetectLeftFace(byte[] vBmp, int width, int height, FaceDetectionResult result);
 
-    public static native void DetectRightFace(byte[] vBmp, int width, int height, float[] feature);
+    public native void DetectRightFace(byte[] vBmp, int width, int height, float[] feature, FaceDetectionResult result);
+
 
     /**
      * This is the function to extract feature from a face.
@@ -59,11 +60,11 @@ public class FaceLockHelper {
      * @param plandmarks float array of face landmarks' coordinates
      *                   Look at the code in real use.
      */
-    public static native void Extractfeatures(byte[] vBmp, int width, int height, float[] plandmarks, int imgType);
+    public native void Extractfeatures(byte[] vBmp, int width, int height, float[] plandmarks, int imgType);
 
     /**
      * This is the function to calculate the similarity of 2 face feature vectors.
      */
-    public static native float Similarity(float[] vFeat1, float[] vFeat2, int length);
+    public native float Similarity(float[] vFeat1, float[] vFeat2, int length);
 
 }
