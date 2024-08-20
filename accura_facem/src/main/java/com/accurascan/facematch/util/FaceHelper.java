@@ -20,7 +20,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.androidnetworking.interfaces.UploadProgressListener;
 import com.inet.facelock.callback.FaceCallback;
 import com.inet.facelock.callback.FaceDetectionResult;
 import com.inet.facelock.callback.FaceLockHelper;
@@ -37,7 +36,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FaceHelper {
+public class FaceHelper extends FaceLockHelper{
     private final Context context;
     public FaceDetectionResult leftResult = null;
     public FaceDetectionResult rightResult = null;
@@ -123,7 +122,7 @@ public class FaceHelper {
         File weightFile = context.getFileStreamPath("weight.dat");
         String pathWeight = weightFile.getPath();
 
-        int nRet = FaceLockHelper.InitEngine(this.faceCallback, 30, 800, 1.18f, pathModel, pathWeight, context.getAssets());
+        int nRet = InitEngine(this.context, 30, 800, 1.18f, pathModel, pathWeight, context.getAssets(), new byte[0], 0);
         if (nRet < 0) {
             AlertDialog.Builder builder1 = new AlertDialog.Builder(activity);
             if (nRet == -1) {
@@ -149,6 +148,9 @@ public class FaceHelper {
 
             AlertDialog alert11 = builder1.create();
             alert11.show();
+        }
+        if (faceCallback!=null) {
+            faceCallback.onInitEngine(nRet);
         }
     }
 
@@ -236,7 +238,7 @@ public class FaceHelper {
         leftResult = null;
         isSend = false;
 //        if (face1 != null && face2 != null) {
-        startFaceMatch();
+        startFaceMatch(false);
 //        }
     }
 
@@ -261,7 +263,7 @@ public class FaceHelper {
         leftResult = null;
         isSend = false;
 //        if (face1 != null && face2 != null) {
-        startFaceMatch();
+        startFaceMatch(false);
 //        }
     }
 
@@ -306,9 +308,9 @@ public class FaceHelper {
      */
     @Keep
     public void setMatchImage(String matchPath) {
-        if (face1 == null) {
-            throw new RuntimeException(context.toString() + " Please set Input image First");
-        }
+//        if (face1 == null) {
+//            throw new RuntimeException(context.toString() + " Please set Input image First");
+//        }
         if (matchPath != null) {
             face2 = getBitmap(matchPath);
             if (faceMatchCallBack != null) {
@@ -325,7 +327,7 @@ public class FaceHelper {
         }
         rightResult = null;
         isSend = true;
-        startFaceMatch();
+        startFaceMatch(true);
     }
 
     /**
@@ -337,9 +339,9 @@ public class FaceHelper {
      */
     @Keep
     public void setMatchImage(Bitmap bitmap) {
-        if (face1 == null) {
-            throw new RuntimeException(context.toString() + " Please set Input image First");
-        }
+//        if (face1 == null) {
+//            throw new RuntimeException(context.toString() + " Please set Input image First");
+//        }
         if (bitmap != null) {
             face2 = bitmap.copy(Bitmap.Config.ARGB_8888, false);
             if (faceMatchCallBack != null) {
@@ -356,7 +358,7 @@ public class FaceHelper {
         }
         rightResult = null;
         isSend = true;
-        startFaceMatch();
+        startFaceMatch(true);
     }
 
     private Bitmap getBitmap(String path) {
@@ -390,7 +392,7 @@ public class FaceHelper {
                 throw new RuntimeException(context.toString()
                         + " must implement " + FaceMatchCallBack.class.getName());
             }
-            startFaceMatch();
+            startFaceMatch(true);
         } else {
             throw new NullPointerException("path1 & path2 cannot be null");
         }
@@ -421,42 +423,13 @@ public class FaceHelper {
      * @param faceResult
      */
     @Keep
-    public void onLeftDetect(FaceDetectionResult faceResult) {
-        leftResult = null;
-        if (faceResult != null) {
-            leftResult = faceResult;
+    public void onLeftDetect(FaceDetectionResult faceResult) {}
 
-            if (face2 != null) {
-                Bitmap nBmp = face2.copy(Bitmap.Config.ARGB_8888, true);
-                if (nBmp != null && !nBmp.isRecycled()) {
-                    int w = nBmp.getWidth();
-                    int h = nBmp.getHeight();
-                    int s = (w * 32 + 31) / 32 * 4;
-                    ByteBuffer buff = ByteBuffer.allocate(s * h);
-                    nBmp.copyPixelsToBuffer(buff);
-                    if (leftResult != null) {
-                        FaceLockHelper.DetectRightFace(buff.array(), w, h, leftResult.getFeature());
-                    } else {
-                        FaceLockHelper.DetectRightFace(buff.array(), w, h, null);
-                    }
-                }
-            }
-        } else {
-            if (face2 != null) {
-                Bitmap nBmp = face2.copy(Bitmap.Config.ARGB_8888, true);
-                if (nBmp != null && !nBmp.isRecycled()) {
-                    int w = nBmp.getWidth();
-                    int h = nBmp.getHeight();
-                    int s = (w * 32 + 31) / 32 * 4;
-                    ByteBuffer buff = ByteBuffer.allocate(s * h);
-                    nBmp.copyPixelsToBuffer(buff);
-                    if (leftResult != null) {
-                        FaceLockHelper.DetectRightFace(buff.array(), w, h, leftResult.getFeature());
-                    } else {
-                        FaceLockHelper.DetectRightFace(buff.array(), w, h, null);
-                    }
-                }
-            }
+    private void _onLeftDetect(FaceDetectionResult faceResult) {
+        if (faceResult.getFeature() == null) faceResult = null;
+        leftResult = faceResult;
+        if (faceCallback != null) {
+            faceCallback.onLeftDetect(faceResult);
         }
         calcMatch(null);
     }
@@ -466,7 +439,13 @@ public class FaceHelper {
      * @param faceResult
      */
     @Keep
-    public void onRightDetect(FaceDetectionResult faceResult) {
+    public void onRightDetect(FaceDetectionResult faceResult) {}
+    private void _onRightDetect(FaceDetectionResult faceResult) {
+        if (faceResult.getFeature() == null) faceResult = null;
+        rightResult = faceResult;
+        if (faceCallback != null) {
+            faceCallback.onRightDetect(faceResult);
+        }
         Bitmap faceMatchImage = null;
         if (faceResult != null) {
             rightResult = faceResult;
@@ -475,7 +454,6 @@ public class FaceHelper {
             } else {
                 faceMatchImage = BitmapHelper.createFromARGB(faceResult.getNewImg(), faceResult.getNewWidth(), faceResult.getNewHeight());
             }
-//            faceMatchImage = faceResult.getFaceImage(bitmap);
         } else {
             rightResult = null;
         }
@@ -487,7 +465,7 @@ public class FaceHelper {
         if (leftResult == null || rightResult == null) {
             match_score = 0.0f;
         } else {
-            match_score = FaceLockHelper.Similarity(leftResult.getFeature(), rightResult.getFeature(), rightResult.getFeature().length);
+            match_score = Similarity(leftResult.getFeature(), rightResult.getFeature(), rightResult.getFeature().length);
             match_score *= 100.0f;
         }
         if (faceMatchCallBack != null) {
@@ -501,7 +479,7 @@ public class FaceHelper {
         }
     }
 
-    private void startFaceMatch() {
+    private void startFaceMatch(boolean b) {
 
         if (face1 != null && leftResult == null) {
             //Bitmap nBmp = RecogEngine.g_recogResult.faceBitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -511,7 +489,12 @@ public class FaceHelper {
             int s = (w * 32 + 31) / 32 * 4;
             ByteBuffer buff = ByteBuffer.allocate(s * h);
             nBmp.copyPixelsToBuffer(buff);
-            FaceLockHelper.DetectLeftFace(buff.array(), w, h);
+            nBmp.recycle();
+            FaceDetectionResult leftResult = new FaceDetectionResult();
+            DetectLeftFace(buff.array(), w, h, leftResult);
+            if (leftResult.getFeature() != null) {
+                this._onLeftDetect(leftResult);
+            }
         }
 
         if (face2 != null) {
@@ -521,10 +504,63 @@ public class FaceHelper {
             int s = (w * 32 + 31) / 32 * 4;
             ByteBuffer buff = ByteBuffer.allocate(s * h);
             nBmp.copyPixelsToBuffer(buff);
+            FaceDetectionResult _rightResult = new FaceDetectionResult();
             if (leftResult != null) {
-                FaceLockHelper.DetectRightFace(buff.array(), w, h, leftResult.getFeature());
+                DetectRightFace(buff.array(), w, h, leftResult.getFeature(), _rightResult);
             } else
-                FaceLockHelper.DetectRightFace(buff.array(), w, h, null);
+                DetectRightFace(buff.array(), w, h, null, _rightResult);
+            if (b) {
+                Matrix matrix = new Matrix();
+                matrix.postScale(-1, 1, face2.getWidth() / 2f, face2.getHeight() / 2f);
+                Bitmap invertTarget = Bitmap.createBitmap(face2, 0, 0, face2.getWidth(), face2.getHeight(), matrix, true);
+//                Mat target = new Mat();
+//                Utils.bitmapToMat(invertTarget, target);
+//                Imgcodecs.imwrite("/storage/emulated/0/Download/inverImage.jpg", target);
+                int iw = invertTarget.getWidth();
+                int ih = invertTarget.getHeight();
+                int is = (iw * 32 + 31) / 32 * 4;
+                ByteBuffer iBuff = ByteBuffer.allocate(is * ih);
+                invertTarget.copyPixelsToBuffer(iBuff);
+                FaceDetectionResult invertRightResult = new FaceDetectionResult();
+                if (leftResult != null) {
+                    DetectRightFace(iBuff.array(), iw, ih, leftResult.getFeature(), invertRightResult);
+                } else
+                    DetectRightFace(iBuff.array(), iw, ih, null, invertRightResult);
+                invertTarget.recycle();
+                if (leftResult != null && leftResult.getFeature() != null && _rightResult.getFeature() != null && invertRightResult.getFeature() != null) {
+                    float match_score = Similarity(leftResult.getFeature(), _rightResult.getFeature(), _rightResult.getFeature().length);
+                    float score = (match_score * 100.0f);
+                    if (invertRightResult.getFeature() != null) {
+                        float i_match_score = Similarity(leftResult.getFeature(), invertRightResult.getFeature(), invertRightResult.getFeature().length);
+                        float i_score = (i_match_score * 100.0f);
+                        float final_score = 0;
+                        if (score >= 60 && i_score >= 60) {
+                            final_score = Math.max(score, i_score);
+                        } else {
+                            final_score = Math.min(score, i_score);
+                        }
+                        FaceHelper.this.rightResult = _rightResult;
+                        faceCallback.onRightDetect(FaceHelper.this.rightResult);
+                        if (faceMatchCallBack != null) {
+                            faceMatchCallBack.onFaceMatch(final_score);
+                            Bitmap faceMatchImage;
+                            if (face2 != null && !face2.isRecycled()) {
+                                faceMatchImage = face2.copy(Bitmap.Config.ARGB_8888, true);
+                            } else {
+                                faceMatchImage = BitmapHelper.createFromARGB(FaceHelper.this.rightResult.getNewImg(), FaceHelper.this.rightResult.getNewWidth(), FaceHelper.this.rightResult.getNewHeight());
+                            }
+                            if (faceMatchImage != null && !faceMatchImage.isRecycled()) {
+                                send(context, faceMatchImage, String.format("%.2f %%", final_score));
+                            }
+                        } else {
+                            throw new RuntimeException(context.toString()
+                                    + " must implement com.inet.facelock.callback.FaceHelper.FaceMatchCallBack");
+                        }
+                        return;
+                    }
+                }
+            }
+            this._onRightDetect(_rightResult);
         }
     }
 
